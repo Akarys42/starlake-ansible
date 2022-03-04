@@ -1,2 +1,2 @@
-# starlake
+# Starlake
 Our Ansible infrastructure.
