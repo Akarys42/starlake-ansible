@@ -1,0 +1,29 @@
+- name: Install UFW
+  apt:
+    name:
+      - ufw
+    update_cache: true
+    cache_valid_time: 3600
+    state: present
+
+- name: Allow SSH
+  ufw:
+    rule: allow
+    name: ssh
+  tags:
+    - role::ufw
+
+- name: Allow TCP/22
+  ufw:
+    rule: allow
+    proto: tcp
+    port: 22
+  tags:
+    - role::ufw
+
+- name: Enable UFW
+  ufw:
+    state: enabled
+    policy: deny
+  tags:
+    - role::ufw

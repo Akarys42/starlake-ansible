@@ -1,0 +1,35 @@
+- name: Install EndleSSH & Fail2Ban
+  apt:
+    name:
+      - endlessh
+      - fail2ban
+    update_cache: true
+    cache_valid_time: 3600
+    state: present
+
+- name: Install action
+  template:
+    src: action.d/endlessh.conf.j2
+    dest: /etc/fail2ban/action.d/endlessh.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart fail2ban
+
+- name: Install jail
+  template:
+    src: jail.d/endlessh.conf.j2
+    dest: /etc/fail2ban/jail.d/endlessh.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart fail2ban
+
+- name: Configure fail2ban to use ufw
+  lineinfile:
+    dest: /etc/fail2ban/jail.conf
+    regexp: "^banaction"
+    line: "banaction = ufw"
+    firstmatch: true
+    state: present
+  notify: restart fail2ban

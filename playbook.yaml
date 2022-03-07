@@ -1,0 +1,8 @@
+- name: Deploy common services
+  hosts: all
+  become: 'yes'
+  remote_user: root
+  roles:
+    - common
+    - ufw
+    - fail2ban-endlessh

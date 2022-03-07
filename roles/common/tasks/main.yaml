@@ -1,0 +1,50 @@
+- name: Install required packages
+  apt:
+    name:
+      - fish
+    update_cache: true
+    cache_valid_time: 3600
+    state: present
+
+- name: Create user account
+  user:
+    name: "{{ user }}"
+    password: "{{ password | string | password_hash('sha512') }}"
+    update_password: on_create
+    groups:
+      - sudo
+    shell: /usr/bin/fish
+    state: present
+
+- name: Create the .ssh directory
+  file:
+    path: /home/{{ user }}/.ssh
+    state: directory
+
+- name: Install SSH key
+  get_url:
+    url: https://akarys.me/ssh
+    dest: /home/{{ user }}/.ssh/authorized_keys
+    owner: root
+    group: root
+
+- name: Install host file
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+    owner: root
+    group: root
+
+- name: Set new hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Update sshd configuration
+  ansible.builtin.template:
+    src: sshd_config.j2
+    dest: /etc/ssh/sshd_config
+    owner: root
+    group: root
+    validate: /usr/sbin/sshd -t -f %s
+    backup: yes
+  notify: restart ssh
