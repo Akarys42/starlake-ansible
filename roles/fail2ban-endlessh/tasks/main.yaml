@@ -33,3 +33,15 @@
     firstmatch: true
     state: present
   notify: restart fail2ban
+
+- name: Start and enable endlessh
+  systemd:
+    name: endlessh
+    state: started
+    enabled: true
+
+- name: Start and enable fail2ban
+  systemd:
+    name: fail2ban
+    state: started
+    enabled: true

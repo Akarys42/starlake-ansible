@@ -27,3 +27,9 @@
     policy: deny
   tags:
     - role::ufw
+
+- name: Start and enable ufw
+  systemd:
+    name: ufw
+    state: started
+    enabled: true
