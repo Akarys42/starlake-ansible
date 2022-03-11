@@ -39,9 +39,11 @@
     name: endlessh
     state: started
     enabled: true
+    daemon_reload: yes
 
 - name: Start and enable fail2ban
   systemd:
     name: fail2ban
     state: started
     enabled: true
+    daemon_reload: yes

@@ -6,30 +6,26 @@
     cache_valid_time: 3600
     state: present
 
-- name: Allow SSH
-  ufw:
-    rule: allow
-    name: ssh
-  tags:
-    - role::ufw
-
 - name: Allow TCP/22
   ufw:
     rule: allow
     proto: tcp
     port: 22
-  tags:
-    - role::ufw
+
+- name: Allow 127.0.0.1
+  ufw:
+    rule: allow
+    proto: tcp
+    from: 127.0.0.1
 
 - name: Enable UFW
   ufw:
     state: enabled
-    policy: deny
-  tags:
-    - role::ufw
+    policy: reject
 
 - name: Start and enable ufw
   systemd:
     name: ufw
     state: started
     enabled: true
+    daemon_reload: yes

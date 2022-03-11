@@ -1,0 +1,10 @@
+k0s_config_dir: /etc/k0s
+k0s_data_dir: /var/lib/k0s
+k0s_libexec_dir: /usr/libexec/k0s
+k0s_internal_ports:
+  - 2380   # etcd peers
+  - 179    # kube-router
+  - 4789   # calico
+  - 10250  # kubelet
+  - 9443   # k0s-api
+  - 8132   # konnectivity

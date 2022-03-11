@@ -1,8 +1,26 @@
 - name: Deploy common services
   hosts: all
-  become: 'yes'
-  remote_user: root
   roles:
     - common
     - ufw
     - fail2ban-endlessh
+
+- name: Setup k0s
+  hosts: k0s
+  roles:
+    - k0s/setup
+
+- name: Configure k0s initial controller
+  hosts: k0s_initial_controller
+  roles:
+    - k0s/initial_controller
+
+- name: Configure k0s controllers
+  hosts: k0s_controller
+  roles:
+    - k0s/controller
+
+- name: Configure k0s worker
+  hosts: k0s_worker
+  roles:
+    - k0s/worker

@@ -1,0 +1,40 @@
+- name: Download k0s binary
+  get_url:
+    url: https://github.com/k0sproject/k0s/releases/download/v1.23.3+k0s.1/k0s-v1.23.3+k0s.1-amd64
+    dest: /usr/bin/k0s
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create k0s Directories
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+  loop:
+    - "{{ k0s_config_dir }}"
+    - "{{ k0s_data_dir }}"
+    - "{{ k0s_libexec_dir }}"
+
+- name: Generate configuration file
+  template:
+    src: k0s.yaml.j2
+    dest: "{{ k0s_config_dir }}/k0s.yaml"
+    owner: root
+    group: root
+    mode: 0600
+  notify: restart k0s
+
+- name: Allow internal traffic
+  ufw:
+    rule: allow
+    proto: tcp
+    port: '{{ item[1] }}'
+    src: '{{ lookup("community.general.dig", hostvars[item[0]].ansible_host, "qtype={{ item[2] }}") }}'
+  with_nested:
+    - '{{ groups["k0s"] }}'
+    - '{{ k0s_internal_ports }}'
+    - ["A", "AAAA"]
