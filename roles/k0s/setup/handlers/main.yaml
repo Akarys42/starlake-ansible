@@ -1,0 +1,4 @@
+- name: restart k0s
+  shell:
+    cmd: k0s stop && k0s start
+  ignore_errors: yes

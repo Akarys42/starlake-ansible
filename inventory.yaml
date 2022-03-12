@@ -2,6 +2,28 @@ all:
   hosts:
     kissland:
       ansible_host: kissland.nodes.starchild.network
+    often:
+      ansible_host: often.nodes.starchild.network
+
+  # Nodes that will be connected to the k0s cluster
+  children:
+    k0s:
+      children:
+        # Used to bootstrap the installation
+        k0s_initial_controller:
+          hosts:
+            kissland:
+
+        # Node in charge of responding to API requests
+        k0s_controller:
+          hosts:
+            often:
+
+        # Node getting pods scheduled
+        k0s_worker:
+          hosts:
+            kissland:
+            often:
 
   vars:
     user: starchild

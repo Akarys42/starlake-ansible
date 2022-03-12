@@ -1,0 +1,42 @@
+- name: Check if the controller already exists
+  stat:
+    path: /etc/systemd/system/k0scontroller.service
+  register: controller_unit
+
+- name: Write the k0s token file
+  template:
+    src: controller-token.j2
+    dest: "{{ k0s_config_dir }}/controller-token"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Create k0s controller service
+  command: k0s install controller --config {{ k0s_config_dir }}/k0s.yaml --token-file {{ k0s_config_dir }}/controller-token
+  register: install_controller_cmd
+  changed_when: install_controller_cmd | length > 0
+  when: controller_unit.stat.exists == False
+
+- debug:
+    msg: Controller already set up
+  when: controller_unit.stat.exists
+
+- name: Start and enable k0scontroller
+  systemd:
+    name: k0scontroller
+    state: started
+    enabled: yes
+    daemon_reload: yes
+
+- name: Allow traffic to kube-apiserver
+  ufw:
+    rule: allow
+    proto: tcp
+    port: 6443
+
+- name: Wait for k8s apiserver
+  wait_for:
+    host: localhost
+    port: 6443
+    delay: 15
+    timeout: 180

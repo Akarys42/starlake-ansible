@@ -1,0 +1,19 @@
+- name: Write the k0s token file
+  template:
+    src: worker-token.j2
+    dest: "{{ k0s_config_dir }}/worker-token"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Create k0s worker service
+  command: k0s install worker --token-file {{ k0s_config_dir }}/worker-token --status-socket {{ k0s_data_dir }}/worker-status.sock
+  register: install_worker_cmd
+  changed_when: install_worker_cmd | length > 0
+
+- name: Start and enable k0sworker
+  systemd:
+    name: k0sworker
+    state: started
+    enabled: yes
+    daemon_reload: yes
