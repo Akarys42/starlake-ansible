@@ -8,3 +8,4 @@ k0s_internal_ports:
   - 10250  # kubelet
   - 9443   # k0s-api
   - 8132   # konnectivity
+  - 7946   # metallb
