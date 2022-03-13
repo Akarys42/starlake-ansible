@@ -1,3 +1,8 @@
+- name: Check if the zorker already exists
+  stat:
+    path: /etc/systemd/system/k0sworker.service
+  register: worker_unit
+
 - name: Write the k0s token file
   template:
     src: worker-token.j2
@@ -5,6 +10,11 @@
     owner: root
     group: root
     mode: 0600
+  when: worker_unit.stat.exists == False
+
+- debug:
+    msg: Worker already set up
+  when: worker_unit.stat.exists
 
 - name: Create k0s worker service
   command: k0s install worker --token-file {{ k0s_config_dir }}/worker-token --status-socket {{ k0s_data_dir }}/worker-status.sock
