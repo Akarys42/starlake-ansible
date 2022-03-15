@@ -48,3 +48,7 @@
     validate: /usr/sbin/sshd -t -f %s
     backup: yes
   notify: restart ssh
+
+- name: Set timezone to UTC
+  timezone:
+    name: UTC
