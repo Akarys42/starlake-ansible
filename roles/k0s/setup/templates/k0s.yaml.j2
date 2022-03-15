@@ -6,6 +6,7 @@ metadata:
 spec:
   api:
     address: {{ lookup('community.general.dig', ansible_host) }}
+    externalAddress: {{ lookup('community.general.dig', hostvars[groups['k0s_initial_controller'][0]]['ansible_host']) }}
     k0sApiPort: 9443
     port: 6443
     sans:

@@ -1,4 +1,4 @@
-- name: Check if the zorker already exists
+- name: Check if the worker already exists
   stat:
     path: /etc/systemd/system/k0sworker.service
   register: worker_unit
@@ -10,7 +10,6 @@
     owner: root
     group: root
     mode: 0600
-  when: worker_unit.stat.exists == False
 
 - debug:
     msg: Worker already set up
@@ -20,6 +19,7 @@
   command: k0s install worker --token-file {{ k0s_config_dir }}/worker-token --status-socket {{ k0s_data_dir }}/worker-status.sock
   register: install_worker_cmd
   changed_when: install_worker_cmd | length > 0
+  when: worker_unit.stat.exists == False
 
 - name: Start and enable k0sworker
   systemd:

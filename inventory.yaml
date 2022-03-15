@@ -12,7 +12,7 @@ all:
         # Used to bootstrap the installation
         k0s_initial_controller:
           hosts:
-            kissland:
+            often:  # Missing critical node, as it is our network access point
 
         # Node in charge of responding to API requests
         k0s_controller:

@@ -26,6 +26,12 @@
     proto: tcp
     port: 6443
 
+- name: Allow traffic to kubelet
+  ufw:
+    rule: allow
+    proto: tcp
+    port: 10250
+
 - name: Wait for k8s apiserver
   wait_for:
     host: localhost
