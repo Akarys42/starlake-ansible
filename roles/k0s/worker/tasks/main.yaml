@@ -31,3 +31,29 @@
     state: started
     enabled: yes
     daemon_reload: yes
+
+# Set up iSCSI as required by OpenEBS
+- name: Install iSCSI
+  apt:
+    name:
+      - open-iscsi
+    update_cache: true
+    cache_valid_time: 3600
+    state: present
+
+- name: Start and enable iSCSI
+  systemd:
+    name: iscsid
+    state: started
+    enabled: true
+    daemon_reload: yes
+
+- name: Load iSCSI module
+  modprobe:
+    name: iscsi_tcp
+    state: present
+
+- name: Add iSCSI to loaded modules
+  copy:
+    dest: /etc/modules-load.d/iscsi_tcp.conf
+    content: iscsi_tcp

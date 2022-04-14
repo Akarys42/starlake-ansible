@@ -36,7 +36,6 @@
   wait_for:
     host: localhost
     port: 6443
-    delay: 15
     timeout: 180
 
 - name: Create controller join token
@@ -71,7 +70,7 @@
   replace:
     path: /tmp/k0s-kubeconfig.yml
     regexp: localhost
-    replace: '{{ ansible_host }}'
+    replace: controller.starchild.network
 
 - name: Set cluster name in kubeconfig
   replace:
