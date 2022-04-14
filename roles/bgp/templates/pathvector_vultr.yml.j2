@@ -1,0 +1,29 @@
+router-id: 107.191.46.129
+kernel-export: false
+irr-server: rr.ntt.net
+rtr-server: rtr.rpki.cloudflare.com:8282
+keep-filtered: true
+asn: 210376
+accept-default: true
+prefixes:
+  - 2a0f:85c1:29::/48
+
+# Communities
+## 210376:101:1 - Learned from upstream
+## 210376:101:2 - Learned from customer
+## 210376:101:3 - Learned from peer
+templates:
+  upstream_vultr:
+    local-pref: 90
+    enforce-first-as: false
+    announce-communities: [ "210376:101:2" ]
+    import-communities: ["210376:101:1"]
+
+peers:
+  Upstream:
+    asn: 64515
+    template: upstream_vultr
+    multihop: true
+    password: {{ bgp_password }}
+    neighbors:
+      - 2001:19f0:ffff::1

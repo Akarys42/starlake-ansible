@@ -1,0 +1,41 @@
+- name: Download pathvector PGP key
+  get_url:
+    url: https://repo.pathvector.io/pgp.asc
+    dest: /usr/share/keyrings/pathvector.asc
+    owner: root
+    group: root
+
+- name: Add pathvector repository
+  copy:
+    dest: /etc/apt/sources.list.d/pathvector.list
+    content: deb [signed-by=/usr/share/keyrings/pathvector.asc] https://repo.pathvector.io/apt/ stable main
+
+- name: Install required packages
+  apt:
+    name:
+      - bird2
+      - pathvector
+    update_cache: true
+    state: present
+
+- name: Create configuration
+  template:
+    src: "pathvector_{{ hostvars[inventory_hostname]['provider'] }}.yml.j2"
+    dest: /etc/pathvector.yml
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    bgp_password: !vault |
+      $ANSIBLE_VAULT;1.1;AES256
+      37643538336638333136346431366632396137376535666234643030643963666261616630653862
+      3265366137336134386438373737386635306462666336360a393461343233373262353134653863
+      64393163616331666438363438376338613131336337636434363831323966396131313333653231
+      6135646663323666620a393430636264643437353031663266323133303030303265613132643937
+      37656565623937323965633330643930333637366230346639643435643335313539303466353037
+      3639333865363032636638363335333337653332653737323536
+  register: pathvector_config
+
+- name: Generate bird config
+  command: pathvector generate
+  when: pathvector_config.changed

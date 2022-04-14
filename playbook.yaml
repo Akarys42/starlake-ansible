@@ -5,6 +5,11 @@
     - ufw
     - fail2ban-endlessh
 
+- name: Deploy BGP routes
+  hosts: bgp
+  roles:
+    - bgp
+
 - name: Setup k0s
   hosts: k0s
   roles:
