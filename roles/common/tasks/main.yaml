@@ -3,7 +3,6 @@
     name:
       - fish
     update_cache: true
-    cache_valid_time: 3600
     state: present
 
 - name: Create user account
@@ -52,3 +51,11 @@
 - name: Set timezone to UTC
   timezone:
     name: UTC
+
+- name: Set DNS servers
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    owner: root
+    group: root
+    mode: 0644

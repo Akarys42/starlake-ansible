@@ -1,3 +1,4 @@
+{{ ansible_managed }}
 apiVersion: k0s.k0sproject.io/v1beta1
 kind: ClusterConfig
 metadata:
@@ -6,12 +7,13 @@ metadata:
 spec:
   api:
     address: {{ lookup('community.general.dig', ansible_host) }}
-    externalAddress: {{ lookup('community.general.dig', hostvars[groups['k0s_initial_controller'][0]]['ansible_host']) }}
+    externalAddress: controller.starchild.network
     k0sApiPort: 9443
     port: 6443
     sans:
     - {{ lookup('community.general.dig', ansible_host) }}
     - {{ ansible_host }}
+    - controller.starchild.network
     tunneledNetworkingMode: false
   controllerManager: {}
   extensions:
@@ -63,8 +65,12 @@ spec:
     adminPort: 8133
     agentPort: 8132
   network:
-    calico: null
-    dualStack: {}
+    calico:
+      mode: "bird"
+    dualStack:
+      enabled: true
+      IPv6podCIDR: "fd00::/108"
+      IPv6serviceCIDR: "fd01::/108"
     kubeProxy:
       mode: iptables
     kuberouter:

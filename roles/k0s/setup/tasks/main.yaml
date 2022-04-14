@@ -34,6 +34,7 @@
     proto: tcp
     port: '{{ item[1] }}'
     src: '{{ lookup("community.general.dig", hostvars[item[0]].ansible_host, "qtype={{ item[2] }}") }}'
+  when: ansible_host !=  hostvars[item[0]].ansible_host
   with_nested:
     - '{{ groups["k0s"] }}'
     - '{{ k0s_internal_ports }}'

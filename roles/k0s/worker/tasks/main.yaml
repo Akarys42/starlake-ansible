@@ -16,7 +16,11 @@
   when: worker_unit.stat.exists
 
 - name: Create k0s worker service
-  command: k0s install worker --token-file {{ k0s_config_dir }}/worker-token --status-socket {{ k0s_data_dir }}/worker-status.sock
+  command: |
+    k0s install worker \
+    --token-file {{ k0s_config_dir }}/worker-token \
+    --status-socket {{ k0s_data_dir }}/worker-status.sock \
+    --labels starchild.network/bgp={% if "bgp" in group_names %}true{% else %}false{% endif %},starchild.network/provider={{ hostvars[inventory_hostname]["provider"] }},starchild.network/location={{ hostvars[inventory_hostname]["location"] }}
   register: install_worker_cmd
   changed_when: install_worker_cmd | length > 0
   when: worker_unit.stat.exists == False

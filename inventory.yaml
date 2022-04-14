@@ -2,17 +2,25 @@ all:
   hosts:
     kissland:
       ansible_host: kissland.nodes.starchild.network
+      provider: vultr
+      location: frankfurt
     often:
       ansible_host: often.nodes.starchild.network
+      provider: linode
+      location: frankfurt
+    sidewalks:
+      ansible_host: sidewalks.nodes.starchild.network
+      provider: oracle
+      location: marseille
 
-  # Nodes that will be connected to the k0s cluster
   children:
+    # Nodes that will be connected to the k0s cluster
     k0s:
       children:
         # Used to bootstrap the installation
         k0s_initial_controller:
           hosts:
-            often:  # Missing critical node, as it is our network access point
+            kissland:  # Mission critical node
 
         # Node in charge of responding to API requests
         k0s_controller:
@@ -24,6 +32,11 @@ all:
           hosts:
             kissland:
             often:
+
+    # Nodes that will serve our AS through BGP
+    bgp:
+      hosts:
+        kissland:
 
   vars:
     user: starchild
