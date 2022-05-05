@@ -25,6 +25,11 @@ all:
             kissland:
             often:
 
+    # Nodes that will have an encrypted folder avail
+    encrypted_folder:
+      hosts:
+        often:
+
   vars:
     user: starchild
     password: !vault |

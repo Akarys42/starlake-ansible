@@ -1,0 +1,57 @@
+- name: Install fscrypt
+  apt:
+    name:
+      - fscrypt
+    update_cache: true
+    cache_valid_time: 3600
+    state: present
+
+- name: Make sure the encryption flag is set
+  command: tune2fs -O encrypt /dev/sda
+
+- name: Check if fscrypt is set up
+  stat:
+    path: /.fscrypt
+  register: fscrypt_stat
+
+- name: Set up fscript
+  command: fscrypt setup --force
+  when: fscrypt_stat.stat.exists == False
+
+- name: Check if the master key exists
+  stat:
+    path: /etc/fscrypt/master_key
+  register: master_key_stat
+
+- name: Make sure the fscrypt folder exists
+  file:
+    path: /etc/fscrypt
+    state: directory
+
+- name: Generate a new master key
+  shell: head --bytes=32 /dev/urandom > /etc/fscrypt/master_key
+  when: master_key_stat.stat.exists == False
+
+- name: Check if the encrypted folder exists
+  stat:
+    path: /var/encrypted
+  register: encrypted_stat
+
+- name: Create encrypted folder
+  file:
+    path: /var/encrypted
+    state: directory
+    mode: 700
+  when: encrypted_stat.stat.exists == False
+
+- name: Encrypt folder
+  command: fscrypt encrypt /var/encrypted --key=/etc/fscrypt/master_key --source=raw_key --name=encrypted_folder
+  when: encrypted_stat.stat.exists == False
+
+- name: Make sure the folder is unlocked on startup
+  template:
+    src: encrypted_folder.j2
+    dest: /etc/init.d/encrypted_folder
+    owner: root
+    group: root
+    mode: 755
