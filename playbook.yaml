@@ -2,13 +2,14 @@
   hosts: all
   roles:
     - common
+    - dnsmasq
     - ufw
     - fail2ban-endlessh
 
-  - name: Create encrypted folder
-    hosts: encrypted_folder
-    roles:
-      - encrypted-folder
+- name: Create encrypted folder
+  hosts: encrypted_folder
+  roles:
+    - encrypted-folder
 
 - name: Setup k0s
   hosts: k0s

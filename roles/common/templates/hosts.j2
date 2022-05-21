@@ -1,3 +1,6 @@
 #<ip-address>   <hostname>
 127.0.0.1       localhost       {{ inventory_hostname }}
 ::1             localhost       {{ inventory_hostname }}
+{% if 'k0s' in groups %}
+10.111.42.0     dns.cluster.local
+{% endif %}
