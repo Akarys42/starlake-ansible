@@ -25,9 +25,15 @@ all:
             kissland:
             often:
 
-    # Nodes that will have an encrypted folder avail
+    # Nodes that will have an encrypted folder available
     encrypted_folder:
       hosts:
+        often:
+
+    # Nodes that run a PowerDNS instance (must be part of the k0s cluster)
+    powerdns:
+      hosts:
+        kissland:
         often:
 
   vars:

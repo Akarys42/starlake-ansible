@@ -1,0 +1,9 @@
+launch=gpgsql
+
+local-address={{ lookup('community.general.dig', ansible_host) }}
+
+gpgsql-host=postgres.default.svc.cluster.local
+gpgsql-port=5432
+gpgsql-dbname=powerdns
+gpgsql-user=powerdns
+gpgsql-password={{ postgres_password }}

@@ -6,6 +6,11 @@
     - ufw
     - fail2ban-endlessh
 
+- name: Setup PowerDNS
+  hosts: powerdns
+  roles:
+    - powerdns
+
 - name: Create encrypted folder
   hosts: encrypted_folder
   roles:

@@ -6,6 +6,15 @@
     cache_valid_time: 3600
     state: present
 
+- name: Make DNSMasq bind only to localhost
+  template:
+    src: dnsmasq.d/bind-to-lo.conf.j2
+    dest: /etc/dnsmasq.d/bind-to-lo.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart dnsmasq
+
 - name: Add CoreDNS (kuber-dns) config
   template:
     src: dnsmasq.d/kube-dns.conf.j2
